@@ -34,18 +34,7 @@ Before you start, ensure you have the following installed:
     cd mobiverse-farming
     npm install
     ```
-
-### Configuration
-1. Setup Environment File
-
-   Create a .env file in the project root if it doesn't already exist.
-    ```bash
-    nano .env
-    ```
-    Paste your token.
-    ```plaintext
-    TOKEN=your_token_here
-    ```
+    
 ### Usage
 - Use the provided script to manage tmux sessions and start the project:
     ```bash
