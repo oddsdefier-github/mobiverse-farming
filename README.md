@@ -23,7 +23,7 @@ Before you start, ensure you have the following installed:
     First, clone the repository to your local machine:
 
     ```bash
-    git clone https://github.com/oddsdefier-github/ mobiverse-farming.git
+    git clone https://github.com/oddsdefier-github/mobiverse-farming.git
     ```
 ### Install Dependencies
 
