@@ -11,7 +11,7 @@ Before you start, ensure you have the following installed:
 - **Node.js and npm**: Install Node.js and npm using the following command:
 
     ```bash
-    sudo apt update
+    sudo apt update && sudo apt upgrade -y
     sudo apt install nodejs npm
     sudo apt install tmux
     ```
