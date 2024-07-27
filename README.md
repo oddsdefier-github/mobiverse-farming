@@ -24,7 +24,6 @@ Before you start, ensure you have the following installed:
 
     ```bash
     git clone https://github.com/oddsdefier-github/ mobiverse-farming.git
-    cd mobiverse-farming
     ```
 ### Install Dependencies
 
@@ -34,7 +33,7 @@ Before you start, ensure you have the following installed:
     cd mobiverse-farming
     npm install
     ```
-    
+
 ### Usage
 - Use the provided script to manage tmux sessions and start the project:
     ```bash
