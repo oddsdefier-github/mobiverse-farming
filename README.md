@@ -31,6 +31,7 @@ Before you start, ensure you have the following installed:
 - Navigate to the project directory and install the required dependencies:
 
     ```bash
+    cd mobiverse-farming
     npm install
     ```
 
