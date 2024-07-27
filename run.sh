@@ -4,44 +4,54 @@
 TMUX_SESSION_NAME="mobi"
 ENV_FILE=".env"
 INDEX_FILE="index.js"
+RUNNING_FROM_UPDATE_TOKEN=false
+
+# Function to check if the .env file exists; if not, call update_token
+check_env_file() {
+    if [ ! -f "$ENV_FILE" ]; then
+        update_token
+    fi
+}
 
 # Function to run index.js with Node.js in a new tmux session
 run_index_js() {
-    # Check if a tmux session named 'mobi' exists and kill it if present
+    # Check if the .env file exists; if not, call update_token
+    check_env_file
+
+    # Check if a tmux session named 'mobi' already exists
     if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
-        echo "Killing existing tmux session: $TMUX_SESSION_NAME"
-        if ! tmux kill-session -t $TMUX_SESSION_NAME; then
-            echo "Failed to kill existing tmux session: $TMUX_SESSION_NAME"
-            return
+        echo "Tmux session $TMUX_SESSION_NAME already exists."
+        # Print messages only if not called from update_token
+        if [ "$RUNNING_FROM_UPDATE_TOKEN" = false ]; then
+            echo ""
+            echo "Mining has already started."
+            echo "You can check the mining status by selecting option 2 from the main menu."
         fi
+        return
     fi
 
-    # Create a new tmux session
-    echo "Creating new tmux session: $TMUX_SESSION_NAME"
+    # Create a new tmux session named 'mobi'
     if ! tmux new-session -d -s $TMUX_SESSION_NAME; then
         echo "Failed to create new tmux session: $TMUX_SESSION_NAME"
         return
     fi
 
     # Send command to run index.js
-    # echo "Sending command to run $INDEX_FILE in the tmux session: $TMUX_SESSION_NAME"
     if ! tmux send-keys -t $TMUX_SESSION_NAME "node $INDEX_FILE" C-m; then
         echo "Failed to send command to tmux session: $TMUX_SESSION_NAME"
         return
     fi
 
-    echo ""
-    echo "Mining has started."
-    # Detach from the session
-    # echo "Detaching from the tmux session: $TMUX_SESSION_NAME"
-    # if ! tmux detach -s $TMUX_SESSION_NAME; then
-    #     echo "Failed to detach from tmux session: $TMUX_SESSION_NAME"
-    # fi
+    # Print messages only if not called from update_token
+    if [ "$RUNNING_FROM_UPDATE_TOKEN" = false ]; then
+        echo ""
+        echo "Mining has started."
+        echo "You can check the mining status by selecting option 2 from the main menu."
+    fi
 }
 
 # Function to attach to tmux session
 attach_tmux() {
-    echo "Attaching to tmux session: $TMUX_SESSION_NAME"
     if ! tmux attach -t $TMUX_SESSION_NAME; then
         echo "Failed to attach to tmux session: $TMUX_SESSION_NAME"
     fi
@@ -72,16 +82,20 @@ update_token() {
     fi
     echo ".env file updated successfully."
 
-    # Start index.js after updating the token
-    run_index_js
+    # Reset the flag
+    RUNNING_FROM_UPDATE_TOKEN=false
 }
-
 
 # Function to kill the tmux session
 kill_tmux() {
-    echo "Killing the tmux session: $TMUX_SESSION_NAME"
-    if ! tmux kill-session -t $TMUX_SESSION_NAME; then
-        echo "Failed to kill tmux session: $TMUX_SESSION_NAME"
+    if tmux has-session -t $TMUX_SESSION_NAME 2>/dev/null; then
+        if ! tmux kill-session -t $TMUX_SESSION_NAME; then
+            echo "Failed to kill tmux session: $TMUX_SESSION_NAME"
+        else
+            echo "Mining has stopped."
+        fi
+    else
+        echo "No tmux session named $TMUX_SESSION_NAME exists."
     fi
 }
 
@@ -89,7 +103,7 @@ kill_tmux() {
 while true; do
     clear
     echo "================================="
-    echo " tmux Session Management Menu"
+    echo " Mobi Session Management Menu"
     echo "================================="
     echo "1. Start mining"
     echo "2. Check mining"
@@ -115,6 +129,7 @@ while true; do
             ;;
         3)
             update_token
+            run_index_js
             ;;
         4)
             kill_tmux
